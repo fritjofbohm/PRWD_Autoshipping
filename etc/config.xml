@@ -41,6 +41,7 @@
     </global>
     <frontend>
         <events>
+            <!-- Add the shipping when the customer hits "Update Basket" at the checkout -->
             <controller_action_postdispatch_checkout_cart_updatePost>
                 <observers>
                     <prwd_autoshipping_observer>
@@ -50,6 +51,7 @@
                     </prwd_autoshipping_observer>
                 </observers>
             </controller_action_postdispatch_checkout_cart_updatePost>
+            <!-- Add the shipping when the customer adds a product to the cart -->
             <controller_action_postdispatch_checkout_cart_add>
                 <observers>
                     <prwd_autoshipping_observer>
@@ -59,6 +61,16 @@
                     </prwd_autoshipping_observer>
                 </observers>
             </controller_action_postdispatch_checkout_cart_add>
+            <!-- Add the shipping when the customer reorders from the my account area -->
+            <controller_action_postdispatch_sales_order_reorder>
+                <observers>
+                    <prwd_autoshipping_observer>
+                        <type>singleton</type>
+                        <class>autoshipping/observer</class>
+                        <method>add_shipping</method>
+                    </prwd_autoshipping_observer>
+                </observers>
+            </controller_action_postdispatch_sales_order_reorder>
             <controller_action_predispatch>
                 <observers>
                     <prwd_autoshipping_observer>
