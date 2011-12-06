@@ -33,17 +33,11 @@
                 <class>PRWD_Autoshipping_Helper</class>
             </autoshipping>
         </helpers>
-
         <models>
             <autoshipping>
                 <class>PRWD_Autoshipping_Model</class>
             </autoshipping>
         </models>
-        <cache>
-            <types>
-                <checkout_quote><label>Shopping Cart data</label></checkout_quote>
-            </types>
-        </cache>
     </global>
     <frontend>
         <events>

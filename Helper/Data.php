@@ -26,10 +26,10 @@ class PRWD_Autoshipping_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function isEnabled()
     {
-        return Mage::getStoreConfig(self::XML_PATH_ENABLED);
+        return Mage::getStoreConfigFlag(self::XML_PATH_ENABLED);
     }
 
-    public function isCountry_id()
+    public function getCountryId()
     {
         return Mage::getStoreConfig(self::XML_PATH_COUNTRY);
     }
