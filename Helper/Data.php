@@ -22,7 +22,7 @@
 class PRWD_Autoshipping_Helper_Data extends Mage_Core_Helper_Abstract
 {
     const XML_PATH_ENABLED = 'autoshipping/settings/enabled';
-    const XML_PATH_COUNTRY = 'autoquote/settings/country_id';
+    const XML_PATH_COUNTRY = 'autoshipping/settings/country_id';
 
     public function isEnabled()
     {
