@@ -21,70 +21,59 @@
  */
 class PRWD_Autoshipping_Model_Observer
 {
-	public function __construct()
-	{
-		
-	}
-	/**
-	* 
-	* @param   Varien_Event_Observer $observer
-	*/
-	public function add_shipping($observer)
-	{
-		if (Mage::getStoreConfig('autoshipping/settings/enabled'))
-		{
-			$country = Mage::getStoreConfig('autoshipping/settings/country_id');
-			Mage::getSingleton('core/session')->setAutoShippingCountry($country);
+    public function add_shipping(Varien_Event_Observer $observer)
+    {
+        if (Mage::getStoreConfig('autoshipping/settings/enabled')) {
+            $country = Mage::getStoreConfig('autoshipping/settings/country_id');
+            Mage::getSingleton('core/session')->setAutoShippingCountry($country);
 
-			Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress()
-				->setCountryId($country)
-				->setCollectShippingRates(true);
-			
-			Mage::getSingleton('checkout/session')->getQuote()
-				->getShippingAddress()->collectShippingRates();
-				
-			$rates = Mage::getSingleton('checkout/session')->getQuote()
-				->getShippingAddress()->getGroupedAllShippingRates();
-			
-			if (count($rates)) {
-				$topRate = reset($rates);
-				$code = $topRate[0]->code;
-				
-				try {
-					Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress()
-						->setShippingMethod($code);
-						
-					Mage::getSingleton('checkout/session')->getQuote()->save();
-					
-					Mage::getSingleton('checkout/session')->resetCheckout();
-					
-				}
-				catch (Mage_Core_Exception $e) {
-					Mage::getSingleton('checkout/session')->addError($e->getMessage());
-				}
-				catch (Exception $e) {
-					Mage::getSingleton('checkout/session')->addException(
-						$e, Mage::helper('checkout')->__('Load customer quote error')
-					);
-				}
-				
-			}
+            Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress()
+                ->setCountryId($country)
+                ->setCollectShippingRates(true);
 
-			return $this;
-		}
-	}
-	
-	public function check_country($observer)
-	{
-		if (Mage::getStoreConfig('autoshipping/settings/enabled'))
-		{
-			$country = Mage::getStoreConfig('autoshipping/settings/country_id');
-			$sessCountry = Mage::getSingleton('core/session')->getAutoShippingCountry();
-			
-			if ($country != $sessCountry) {
-				$this->add_shipping($observer);
-			}
-		}
-	}
+            Mage::getSingleton('checkout/session')->getQuote()
+                ->getShippingAddress()->collectShippingRates();
+
+            $rates = Mage::getSingleton('checkout/session')->getQuote()
+                ->getShippingAddress()->getGroupedAllShippingRates();
+
+            if (count($rates)) {
+                $topRate = reset($rates);
+                $code    = $topRate[0]->code;
+
+                try {
+                    Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress()
+                        ->setShippingMethod($code);
+
+                    Mage::getSingleton('checkout/session')->getQuote()->save();
+
+                    Mage::getSingleton('checkout/session')->resetCheckout();
+
+                }
+                catch (Mage_Core_Exception $e) {
+                    Mage::getSingleton('checkout/session')->addError($e->getMessage());
+                }
+                catch (Exception $e) {
+                    Mage::getSingleton('checkout/session')->addException(
+                        $e, Mage::helper('checkout')->__('Load customer quote error')
+                    );
+                }
+
+            }
+
+            return $this;
+        }
+    }
+
+    public function check_country($observer)
+    {
+        if (Mage::getStoreConfig('autoshipping/settings/enabled')) {
+            $country     = Mage::getStoreConfig('autoshipping/settings/country_id');
+            $sessCountry = Mage::getSingleton('core/session')->getAutoShippingCountry();
+
+            if ($country != $sessCountry) {
+                $this->add_shipping($observer);
+            }
+        }
+    }
 }
-?>
