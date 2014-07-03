@@ -23,8 +23,9 @@ class PRWD_Autoshipping_Model_Observer
 {
     public function add_shipping(Varien_Event_Observer $observer)
     {
-        if (Mage::helper("autoshipping")->isEnabled()) {
-            $country = Mage::helper("autoshipping")->getCountryId();
+        if (Mage::helper('autoshipping')->isEnabled())
+        {
+            $country = Mage::helper('autoshipping')->getCountryId();
 
             Mage::getSingleton('core/session')->setAutoShippingCountry($country);
 
@@ -38,11 +39,27 @@ class PRWD_Autoshipping_Model_Observer
             $rates = Mage::getSingleton('checkout/session')->getQuote()
                 ->getShippingAddress()->getGroupedAllShippingRates();
 
-            if (count($rates)) {
+            if (count($rates))
+            {
                 $topRate = reset($rates);
                 $code    = $topRate[0]->code;
 
-                try {
+                $minimalPrice = PHP_INT_MAX;
+
+                foreach ($rates as $rate)
+                {
+                    foreach ($rate as $tariff)
+                    {
+                        if ($tariff->getPrice() <= $minimalPrice)
+                        {
+                            $minimalPrice = $tariff->getPrice();
+                            $code = $tariff->getCode();
+                        }
+                    }
+                }
+
+                try
+                {
                     Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress()
                         ->setShippingMethod($code);
 
@@ -51,15 +68,16 @@ class PRWD_Autoshipping_Model_Observer
                     Mage::getSingleton('checkout/session')->resetCheckout();
 
                 }
-                catch (Mage_Core_Exception $e) {
+                catch (Mage_Core_Exception $e)
+                {
                     Mage::getSingleton('checkout/session')->addError($e->getMessage());
                 }
-                catch (Exception $e) {
+                catch (Exception $e)
+                {
                     Mage::getSingleton('checkout/session')->addException(
                         $e, Mage::helper('checkout')->__('Load customer quote error')
                     );
                 }
-
             }
 
             return $this;
@@ -68,11 +86,12 @@ class PRWD_Autoshipping_Model_Observer
 
     public function check_country($observer)
     {
-        if (Mage::helper("autoshipping")->isEnabled()) {
-            $country     = Mage::helper("autoshipping")->getCountryId();
+        if (Mage::helper('autoshipping')->isEnabled()) {
+            $country     = Mage::helper('autoshipping')->getCountryId();
             $sessCountry = Mage::getSingleton('core/session')->getAutoShippingCountry();
 
-            if ($country != $sessCountry) {
+            if ($country != $sessCountry)
+            {
                 $this->add_shipping($observer);
             }
         }
